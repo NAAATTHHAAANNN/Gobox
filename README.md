@@ -29,31 +29,31 @@ func main() {
 -----------
 ```go
 func main() {
-	gobox.DialogBox("Error", Error, ) //add icon (there are also Question,Info and Warning icons)
+	gobox.DialogBox("Error", gobox.Error, ) //add icon (there are also Question,Info and Warning icons)
 }
 ```
 -----------
 ```go
 func main() {
-	gobox.DialogBox("Error", Error, "Error while loading files!") //add message
+	gobox.DialogBox("Error", gobox.Error, "Error while loading files!") //add message
 }
 ```
 -----------
 ```go
 func main() {
-	gobox.DialogBox("Error", Error, "Error while loading files!", "Ok") //add button text
+	gobox.DialogBox("Error", gobox.Error, "Error while loading files!", "Ok") //add button text
 }
 ```
 -----------
 ```go
 func main() {
-	gobox.DialogBox("Error", Error, "Error while loading files!", "Ok", StandardSize) //standard fontsize for your os (you can change it manually though)
+	gobox.DialogBox("Error", gobox.Error, "Error while loading files!", "Ok", gobox.StandardSize) //standard fontsize for your os (you can change it manually though)
 }
 ```
 -----------
 ```go
 func main() {
-	gobox.DialogBox("Error", Error, "Error while loading files!", "Ok", StandardSize, 0, 0) //add height and width(0 0 is a default size)
+	gobox.DialogBox("Error", gobox.Error, "Error while loading files!", "Ok", gobox.StandardSize, 0, 0) //add height and width(0 0 is a default size)
 }
 ```
 <h2>Result:</h2> 
