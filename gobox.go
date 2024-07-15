@@ -1,12 +1,11 @@
-package main
+package gobox
 
 import (
-	//for os check
-
+	"embed"
 	"path/filepath"
 	"runtime"
 
-	//all necessary packages from fyne
+	// all necessary packages from fyne
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
@@ -15,14 +14,19 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+//go:embed icons/windows/*
+//go:embed icons/linux/*
+//go:embed icons/mac/*
+var embeddedFiles embed.FS
+
 var (
-	//icons
+	// icons
 	Info     string
 	Question string
 	Error    string
 	Warning  string
 
-	//standard fontsize for every os
+	// standard fontsize for every OS
 	StandardSize float32
 	IconHeight   float32
 	IconWidth    float32
@@ -32,39 +36,36 @@ func init() {
 	// Check the current OS and set the file paths for the icons
 	switch runtime.GOOS {
 
-	//for windows
+	// for windows
 	case "windows":
-		//font size
+		// font size
 		StandardSize = 14
 		IconHeight = 40
 		IconWidth = 35
-		i := filepath.Join("icons", "windows", "infoWindows.png")
-		q := filepath.Join("icons", "windows", "questionWindows.png")
-		e := filepath.Join("icons", "windows", "errorWindows.png")
-		w := filepath.Join("icons", "windows", "warningWindows.png")
-		Info, Question, Error, Warning = i, q, e, w
+		Info = "icons/windows/infoWindows.png"
+		Question = "icons/windows/questionWindows.png"
+		Error = "icons/windows/errorWindows.png"
+		Warning = "icons/windows/warningWindows.png"
 
-	//for linux
+	// for linux
 	case "linux":
-		//font size
+		// font size
 		StandardSize = 16
 		IconHeight = 50
 		IconWidth = 45
-		i := filepath.Join("icons", "linux", "infoLinux.png")
-		q := filepath.Join("icons", "linux", "questionLinux.png")
-		e := filepath.Join("icons", "linux", "errorLinux.png")
-		w := filepath.Join("icons", "linux", "warningLinux.png")
-		Info, Question, Error, Warning = i, q, e, w
+		Info = "icons/linux/infoLinux.png"
+		Question = "icons/linux/questionLinux.png"
+		Error = "icons/linux/errorLinux.png"
+		Warning = "icons/linux/warningLinux.png"
 
-	//for mac
+	// for mac
 	case "darwin":
-		//font size
+		// font size
 		StandardSize = 16
 		IconHeight = 50
 		IconWidth = 45
-		e := filepath.Join("icons", "macos", "errorMac.png")
-		w := filepath.Join("icons", "macos", "warningMac.png")
-		Error, Warning = e, w
+		Error = "icons/macos/errorMac.png"
+		Warning = "icons/macos/warningMac.png"
 	}
 }
 
@@ -75,20 +76,28 @@ func DialogBox(title string, icon string, message string, btntext string, fontsi
 	myWindow.SetFixedSize(true)
 	myWindow.SetMaster()
 
-	// Load the icon image
-	iconImage := canvas.NewImageFromFile(icon)
-	myWindow.SetIcon(iconImage.Resource)
+	// Set window icon for platforms that support it (e.g., Windows)
+	var iconImage *canvas.Image
+	if icon != "" {
+		// Load the icon image
+		iconData, err := embeddedFiles.ReadFile(icon)
+		if err == nil {
+			iconResource := fyne.NewStaticResource(filepath.Base(icon), iconData)
+			iconImage = canvas.NewImageFromResource(iconResource)
+			myWindow.SetIcon(iconResource)
+		}
+	}
 
 	textLabel := widget.NewLabel(message)
 
 	// Display the icon next to the message
-	pngIcon := canvas.NewImageFromFile(icon)
-
-	pngIcon.SetMinSize(fyne.NewSize(IconHeight, IconWidth))
+	if iconImage != nil {
+		iconImage.SetMinSize(fyne.NewSize(IconHeight, IconWidth))
+	}
 
 	iconAndMessageContainer := container.NewHBox(
 		layout.NewSpacer(),
-		pngIcon,
+		iconImage,
 		layout.NewSpacer(),
 		textLabel,
 		layout.NewSpacer(),
@@ -114,7 +123,7 @@ func DialogBox(title string, icon string, message string, btntext string, fontsi
 		buttonContainer,
 	)
 
-	//run
+	// run
 	myWindow.SetContent(mainContainer)
 	myWindow.Resize(fyne.NewSize(w, h))
 	myWindow.CenterOnScreen()
