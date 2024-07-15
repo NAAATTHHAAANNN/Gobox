@@ -1,4 +1,4 @@
-package gobox
+package main
 
 import (
 	//for os check
@@ -17,10 +17,10 @@ import (
 
 var (
 	//icons
-	Info     *string
-	Question *string
-	Error    *string
-	Warning  *string
+	Info     string
+	Question string
+	Error    string
+	Warning  string
 
 	//standard fontsize for every os
 	StandardSize float32
@@ -42,7 +42,7 @@ func init() {
 		q := filepath.Join("icons", "windows", "questionWindows.png")
 		e := filepath.Join("icons", "windows", "errorWindows.png")
 		w := filepath.Join("icons", "windows", "warningWindows.png")
-		Info, Question, Error, Warning = &i, &q, &e, &w
+		Info, Question, Error, Warning = i, q, e, w
 
 	//for linux
 	case "linux":
@@ -54,7 +54,7 @@ func init() {
 		q := filepath.Join("icons", "linux", "questionLinux.png")
 		e := filepath.Join("icons", "linux", "errorLinux.png")
 		w := filepath.Join("icons", "linux", "warningLinux.png")
-		Info, Question, Error, Warning = &i, &q, &e, &w
+		Info, Question, Error, Warning = i, q, e, w
 
 	//for mac
 	case "darwin":
@@ -64,28 +64,25 @@ func init() {
 		IconWidth = 45
 		e := filepath.Join("icons", "macos", "errorMac.png")
 		w := filepath.Join("icons", "macos", "warningMac.png")
-		Error, Warning = &e, &w
+		Error, Warning = e, w
 	}
 }
 
 // DialogBox displays a modal dialog box with an icon, message, and button.
-func DialogBox(title string, icon *string, message string, btntext string, fontsize float32, w float32, h float32) {
+func DialogBox(title string, icon string, message string, btntext string, fontsize float32, w float32, h float32) {
 	myApp := app.New()
 	myWindow := myApp.NewWindow(title)
 	myWindow.SetFixedSize(true)
 	myWindow.SetMaster()
 
-	// Set window icon for platforms that support it (e.g., Windows)
-	if icon != nil {
-		// Load the icon image
-		iconImage := canvas.NewImageFromFile(*icon)
-		myWindow.SetIcon(iconImage.Resource)
-	}
+	// Load the icon image
+	iconImage := canvas.NewImageFromFile(icon)
+	myWindow.SetIcon(iconImage.Resource)
 
 	textLabel := widget.NewLabel(message)
 
 	// Display the icon next to the message
-	pngIcon := canvas.NewImageFromFile(*icon)
+	pngIcon := canvas.NewImageFromFile(icon)
 
 	pngIcon.SetMinSize(fyne.NewSize(IconHeight, IconWidth))
 
