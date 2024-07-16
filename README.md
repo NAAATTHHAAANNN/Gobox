@@ -10,7 +10,7 @@ go get github.com/jexlor/gobox
 ```
 
 ```go
-    import( "github.com/jexlor/gobox" ) //import library
+import( "github.com/jexlor/gobox" ) //import library
 ```
 
 <h1>Usage:</h1> 
